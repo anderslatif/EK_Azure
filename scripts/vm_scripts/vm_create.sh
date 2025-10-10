@@ -3,8 +3,8 @@
 source "$(dirname "$0")/../misc/terminal_colors.sh"
 
 # Configuration file paths
-CONFIG_FILE="$(dirname "$0")/vm_config.sh"
-AVAILABLE_REGIONS_CONFIG="$(dirname "$0")/../available_regions/available_regions_config.sh"
+CONFIG_FILE="$(dirname "$0")/vm.config.sh"
+AVAILABLE_REGIONS_CONFIG="$(dirname "$0")/../available_regions/available_regions.config.sh"
 
 # Check if variables are already defined, if not source or create config
 if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$VM_NAME" ] || [ -z "$ADMIN_USER" ] || [ -z "$SSH_KEY_PATH" ]; then

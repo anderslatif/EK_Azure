@@ -58,7 +58,7 @@ $ ./vm_scripts/vm_create.sh
 
 Follow the prompts. It will take a few minutes to find what regions are available for your account but you will only need to do this once.
 
-The VM configuration will be saved to `scripts/vm_scripts/vm_config.sh` while available regions will be saved to `scripts/available_regions/available_regions_config.sh`.
+The VM configuration will be saved to `scripts/vm_scripts/vm.config.sh` while available regions will be saved to `scripts/available_regions/available_regions.config.sh`.
 
 To destroy the VM:
 
@@ -66,5 +66,5 @@ To destroy the VM:
 $ ./vm_scripts/vm_destroy.sh
 ```
 
-It will look at `vm_config.sh` to find the resource group to destroy.
+It will look at `vm.config.sh` to find the resource group to destroy.
 

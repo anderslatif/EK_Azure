@@ -3,7 +3,7 @@
 source "$(dirname "$0")/../misc/terminal_colors.sh"
 
 # Configuration file path
-CONFIG_FILE="$(dirname "$0")/vm_config.sh"
+CONFIG_FILE="$(dirname "$0")/vm.config.sh"
 
 # Check if variables are already defined, if not source or create config
 if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$VM_NAME" ] || [ -z "$ADMIN_USER" ] || [ -z "$SSH_KEY_PATH" ]; then
