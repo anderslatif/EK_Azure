@@ -22,4 +22,47 @@ How to keep track of spending and set up budgets and alerts.
 
 ## Scripts
 
+### Prerequisite
+
+If you are on **Windows** then run the following scripts on `Windows Subsystem for Linux`, `Git Bash` or the equivalent.
+
+1. Install `AZ CLI`:
+
+https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest&pivots=winget
+
+2. Log in with your browser to get the subscription id. In your terminal run:
+
+```bash
+$ az login
+```
+
+---
+
+### Available Regions
+
+Find out which regions are available for your account:
+
+```bash
+$ ./available_regions/available_regions_standalone.sh
+```
+
+---
+
+### VMs
+
+Create a VM:
+
+```bash
+$ ./vm_scripts/vm_create.sh
+```
+
+Follow the prompts. It will take a few minutes to find what regions are available for your account. Everything will be saved to `vm_config.sh` so you only need to do this once. 
+
+To destroy the VM:
+
+```bash
+$ ./vm_scripts/vm_destroy.sh
+```
+
+It will look at `vm_config.sh` to find the resource group to destroy.
 
