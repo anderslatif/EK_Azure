@@ -56,7 +56,9 @@ Create a VM:
 $ ./vm_scripts/vm_create.sh
 ```
 
-Follow the prompts. It will take a few minutes to find what regions are available for your account. Everything will be saved to `vm_config.sh` so you only need to do this once. 
+Follow the prompts. It will take a few minutes to find what regions are available for your account but you will only need to do this once.
+
+The VM configuration will be saved to `scripts/vm_scripts/vm_config.sh` while available regions will be saved to `scripts/available_regions/available_regions_config.sh`.
 
 To destroy the VM:
 

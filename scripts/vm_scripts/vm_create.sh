@@ -2,14 +2,17 @@
 # Source terminal colors
 source "$(dirname "$0")/../misc/terminal_colors.sh"
 
-# Configuration file path
+# Configuration file paths
 CONFIG_FILE="$(dirname "$0")/vm_config.sh"
+AVAILABLE_REGIONS_CONFIG="$(dirname "$0")/../available_regions/available_regions_config.sh"
 
 # Check if variables are already defined, if not source or create config
 if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$VM_NAME" ] || [ -z "$ADMIN_USER" ] || [ -z "$SSH_KEY_PATH" ]; then
     if [ -f "$CONFIG_FILE" ]; then
         # Config file exists, source it
         source "$CONFIG_FILE"
+        # Also source available regions if exists
+        [ -f "$AVAILABLE_REGIONS_CONFIG" ] && source "$AVAILABLE_REGIONS_CONFIG"
     else
         # Config file doesn't exist, prompt user and create it
         echo "Configuration file not found. Please provide the following details:"
@@ -25,14 +28,30 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$VM_NAME" ] || [ -z "$ADMIN_
         read -p "SSH Key Path [~/.ssh/id_rsa.pub]: " SSH_KEY_PATH
         SSH_KEY_PATH=${SSH_KEY_PATH:-~/.ssh/id_rsa.pub}
 
-        # Get available regions (last prompt before deployment)
-        printf "${BLUE}Fetching your available Azure regions...${NC} This will take several minutes but it will only be required the first time.\n"
-        AVAILABLE_REGIONS_SCRIPT="$(dirname "$0")/../available_regions/available_regions.sh"
-        AVAILABLE_REGIONS=()
-        TEMP_REGIONS=$(bash "$AVAILABLE_REGIONS_SCRIPT")
-        while IFS= read -r region; do
-            [ -n "$region" ] && AVAILABLE_REGIONS+=("$region")
-        done <<< "$TEMP_REGIONS"
+        # Check if available regions config exists
+        if [ -f "$AVAILABLE_REGIONS_CONFIG" ]; then
+            # Load existing available regions
+            source "$AVAILABLE_REGIONS_CONFIG"
+        else
+            # Get available regions (last prompt before deployment)
+            printf "${BLUE}Fetching your available Azure regions...${NC} This will take several minutes but it will only be required the first time.\n"
+            AVAILABLE_REGIONS_SCRIPT="$(dirname "$0")/../available_regions/available_regions.sh"
+            AVAILABLE_REGIONS=()
+            TEMP_REGIONS=$(bash "$AVAILABLE_REGIONS_SCRIPT")
+            while IFS= read -r region; do
+                [ -n "$region" ] && AVAILABLE_REGIONS+=("$region")
+            done <<< "$TEMP_REGIONS"
+
+            # Save available regions to config file
+            {
+                echo "# Available Azure regions (cached)"
+                echo "AVAILABLE_REGIONS=("
+                for region in "${AVAILABLE_REGIONS[@]}"; do
+                    echo "  \"$region\""
+                done
+                echo ")"
+            } > "$AVAILABLE_REGIONS_CONFIG"
+        fi
 
         # Display numbered list of regions
         printf "${GREEN}Available regions:${NC}\n"
@@ -51,7 +70,7 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$VM_NAME" ] || [ -z "$ADMIN_
             fi
         done
 
-        # Create config file with available regions list
+        # Create config file
         {
             echo "# VM Configuration"
             echo "RG_NAME=\"$RG_NAME\""
@@ -59,13 +78,6 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$VM_NAME" ] || [ -z "$ADMIN_
             echo "VM_NAME=\"$VM_NAME\""
             echo "ADMIN_USER=\"$ADMIN_USER\""
             echo "SSH_KEY_PATH=\"$SSH_KEY_PATH\""
-            echo ""
-            echo "# Available regions"
-            echo "AVAILABLE_REGIONS=("
-            for region in "${AVAILABLE_REGIONS[@]}"; do
-                echo "  \"$region\""
-            done
-            echo ")"
         } > "$CONFIG_FILE"
 
         echo "Configuration saved to $CONFIG_FILE"
