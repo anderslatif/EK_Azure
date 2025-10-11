@@ -3,20 +3,6 @@
 # Source terminal colors
 source "$(dirname "$0")/../misc/terminal_colors.sh"
 
-# Display assumptions
-printf "${BLUE}This script will create an Azure Web App with the following configuration:${NC}\n"
-echo "  - App Service Plan: F1 (Free tier)"
-echo "  - OS: Linux"
-echo "  - Runtime: Java 21"
-echo ""
-
-# Prompt for confirmation
-read -p "Do you want to proceed with these settings? (y|yes): " CONFIRM
-if [[ ! "$CONFIRM" =~ ^[Yy](es)?$ ]]; then
-    printf "${RED}Setup cancelled.${NC}\n"
-    exit 0
-fi
-
 # Configuration file paths
 CONFIG_FILE="$(dirname "$0")/web_app.config.sh"
 AVAILABLE_REGIONS_CONFIG="$(dirname "$0")/../available_regions/available_regions_config.sh"
@@ -29,7 +15,21 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$WEB_APP_NAME" ] || [ -z "$A
         # Also source available regions if exists
         [ -f "$AVAILABLE_REGIONS_CONFIG" ] && source "$AVAILABLE_REGIONS_CONFIG"
     else
-        # Config file doesn't exist, prompt user and create it
+        # Config file doesn't exist, show assumptions and prompt for confirmation
+        printf "${BLUE}This script will create an Azure Web App with the following configuration:${NC}\n"
+        echo "  - App Service Plan: F1 (Free tier)"
+        echo "  - OS: Linux"
+        echo "  - Runtime: Java 21"
+        echo ""
+
+        # Prompt for confirmation
+        read -p "Do you want to proceed with these settings? (y/yes): " CONFIRM
+        if [[ ! "$CONFIRM" =~ ^[Yy](es)?$ ]]; then
+            printf "${RED}Setup cancelled.${NC}\n"
+            exit 0
+        fi
+
+        # Prompt user and create config
         echo ""
         echo "Configuration file not found. Please provide the following details:"
 
@@ -42,7 +42,14 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$WEB_APP_NAME" ] || [ -z "$A
         while true; do
             read -p "Web App Name (must be globally unique): " WEB_APP_NAME
             if [ -n "$WEB_APP_NAME" ]; then
-                break
+                # Check if the web app name is already taken
+                printf "${BLUE}Checking availability of '$WEB_APP_NAME'...${NC}\n"
+                if az webapp list --query "[?defaultHostName=='$WEB_APP_NAME.azurewebsites.net'].name" --output tsv 2>/dev/null | grep -q .; then
+                    printf "${RED}Web App name '$WEB_APP_NAME' is already taken. Please choose another name.${NC}\n"
+                else
+                    printf "${GREEN}Web App name '$WEB_APP_NAME' is available.${NC}\n"
+                    break
+                fi
             else
                 printf "${RED}Web App Name cannot be empty.${NC}\n"
             fi
