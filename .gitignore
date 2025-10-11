@@ -1,2 +1,4 @@
 vm.config.sh
 available_regions.config.sh
+web_app.config.sh
+mysql.config.sh
