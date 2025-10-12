@@ -6,7 +6,7 @@ source "$(dirname "$0")/../misc/read_password.sh"
 
 # Configuration file paths
 CONFIG_FILE="$(dirname "$0")/mysql.config.sh"
-AVAILABLE_REGIONS_CONFIG="$(dirname "$0")/../available_regions/available_regions_config.sh"
+AVAILABLE_REGIONS_CONFIG="$(dirname "$0")/../available_regions/available_regions.config.sh"
 
 # Check if MySQL variables are already defined, if not source or create config
 if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$MYSQL_SERVER_NAME" ] || [ -z "$MYSQL_ADMIN_USER" ] || [ -z "$MYSQL_ADMIN_PASSWORD" ] || [ -z "$MYSQL_DB_NAME" ]; then
@@ -84,8 +84,7 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$MYSQL_SERVER_NAME" ] || [ -
 
         # Validate password
         while true; do
-            read -sp "MySQL Admin Password (8-128 chars, must include 3 of: uppercase, lowercase, numbers, special chars): " MYSQL_ADMIN_PASSWORD
-            echo ""
+            read_password "MySQL Admin Password (8-128 chars, must include 3 of: uppercase, lowercase, numbers, special chars): " MYSQL_ADMIN_PASSWORD
 
             if [ -z "$MYSQL_ADMIN_PASSWORD" ]; then
                 printf "${RED}Password cannot be empty.${NC}\n"
@@ -122,8 +121,7 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$MYSQL_SERVER_NAME" ] || [ -
             fi
 
             # Confirm password
-            read -sp "Confirm MySQL Admin Password: " MYSQL_ADMIN_PASSWORD_CONFIRM
-            echo ""
+            read_password "Confirm MySQL Admin Password: " MYSQL_ADMIN_PASSWORD_CONFIRM
             if [ "$MYSQL_ADMIN_PASSWORD" = "$MYSQL_ADMIN_PASSWORD_CONFIRM" ]; then
                 printf "${GREEN}Password is valid.${NC}\n"
                 break
@@ -224,15 +222,38 @@ if ! az mysql flexible-server db create \
     exit 1
 fi
 
-# 4. Display connection information
+# 4. Configure firewall rules
+printf "\n${GREEN}Configuring firewall rules...${NC}\n"
+
+# Allow Azure services to access the server
+printf "${BLUE}Allowing Azure services to access the database...${NC}\n"
+az mysql flexible-server firewall-rule create \
+  --resource-group $RG_NAME \
+  --name $MYSQL_SERVER_NAME \
+  --rule-name AllowAzureServices \
+  --start-ip-address 0.0.0.0 \
+  --end-ip-address 0.0.0.0
+
+# Get current public IP and add firewall rule
+printf "${BLUE}Getting your current IP address...${NC}\n"
+CURRENT_IP=$(curl -s https://api.ipify.org)
+if [ -n "$CURRENT_IP" ]; then
+    printf "${BLUE}Adding firewall rule for your IP: $CURRENT_IP${NC}\n"
+    az mysql flexible-server firewall-rule create \
+      --resource-group $RG_NAME \
+      --name $MYSQL_SERVER_NAME \
+      --rule-name AllowCurrentIP \
+      --start-ip-address $CURRENT_IP \
+      --end-ip-address $CURRENT_IP
+    printf "${GREEN}Firewall rule added for IP: $CURRENT_IP${NC}\n"
+else
+    printf "${RED}Could not retrieve current IP address. You may need to add firewall rules manually.${NC}\n"
+fi
+
+# 5. Display connection information
 printf "\n${GREEN}MySQL Flexible Server created successfully!${NC}\n"
 printf "${BLUE}Server Name: $MYSQL_SERVER_NAME.mysql.database.azure.com${NC}\n"
-printf "${BLUE}Database Name: $MYSQL_DB_NAME${NC}\n"
 printf "${BLUE}Admin User: $MYSQL_ADMIN_USER${NC}\n"
+printf "${BLUE}Database Name: $MYSQL_DB_NAME${NC}\n"
 printf "\n${GREEN}Connection string format:${NC}\n"
 printf "jdbc:mysql://$MYSQL_SERVER_NAME.mysql.database.azure.com:3306/$MYSQL_DB_NAME?useSSL=true\n"
-
-echo "\n"
-echo -e "${GREEN}Try connecting to the database using the following command:${NC}"
-echo -e "${BLUE}mysql -h $MYSQL_SERVER_NAME.mysql.database.azure.com -u $MYSQL_ADMIN_USER -p $MYSQL_DB_NAME${NC}"
-

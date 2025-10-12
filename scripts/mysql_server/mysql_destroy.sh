@@ -3,18 +3,8 @@
 # Source terminal colors
 source "$(dirname "$0")/../misc/terminal_colors.sh"
 
-# Configuration file paths
-WEB_APP_CONFIG="$(dirname "$0")/web_app.config.sh"
+# Configuration file path
 CONFIG_FILE="$(dirname "$0")/mysql.config.sh"
-
-# Check if web app config exists (to get resource group)
-if [ ! -f "$WEB_APP_CONFIG" ]; then
-    printf "${RED}Error: web_app.config.sh not found.${NC}\n"
-    exit 1
-fi
-
-# Source web app config to get RG_NAME
-source "$WEB_APP_CONFIG"
 
 # Check if MySQL config exists and source it
 if [ -f "$CONFIG_FILE" ]; then
@@ -40,11 +30,10 @@ fi
 printf "${BLUE}This will delete the following Azure resources:${NC}\n"
 echo "  - MySQL Flexible Server: $MYSQL_SERVER_NAME"
 echo "  - All databases within this server (including $MYSQL_DB_NAME)"
-echo "  - Resource Group: $RG_NAME (will remain intact)"
 echo ""
 
-# Prompt for confirmation
-read -p "Are you sure you want to delete the MySQL server? (y|yes): " CONFIRM
+# Prompt for confirmation to delete MySQL server
+read -p "Are you sure you want to delete the MySQL server? (y/yes): " CONFIRM
 if [[ ! "$CONFIRM" =~ ^[Yy](es)?$ ]]; then
     printf "${RED}Deletion cancelled.${NC}\n"
     exit 0
@@ -58,3 +47,15 @@ az mysql flexible-server delete \
   --yes
 
 printf "${GREEN}MySQL Flexible Server deleted successfully.${NC}\n"
+
+# Prompt for resource group deletion
+echo ""
+read -p "Do you also want to delete the resource group '$RG_NAME'? (y/yes): " CONFIRM_RG
+if [[ "$CONFIRM_RG" =~ ^[Yy](es)?$ ]]; then
+    printf "\n${GREEN}Deleting resource group...${NC}\n"
+    az group delete --name $RG_NAME --yes --no-wait
+    printf "${GREEN}Resource group deletion initiated.${NC}\n"
+    printf "${BLUE}Note: Deletion happens asynchronously. Use 'az group list' to check status.${NC}\n"
+else
+    printf "${BLUE}Resource group '$RG_NAME' was not deleted.${NC}\n"
+fi
