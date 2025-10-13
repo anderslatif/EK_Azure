@@ -40,6 +40,8 @@ Make sure to select the correct subscription id when prompted.
 
 3. If you are on **Windows** then make sure to run the scripts below on `Windows Subsystem for Linux`, `Git Bash` or the equivalent.
 
+4. **Note**: a lot of output including "warnings" will be printed to the terminal. This is output from the Azure CLI and is normal.
+
 ---
 
 ### Available Regions

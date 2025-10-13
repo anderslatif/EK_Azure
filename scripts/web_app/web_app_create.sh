@@ -5,7 +5,7 @@ source "$(dirname "$0")/../misc/terminal_colors.sh"
 
 # Configuration file paths
 CONFIG_FILE="$(dirname "$0")/web_app.config.sh"
-AVAILABLE_REGIONS_CONFIG="$(dirname "$0")/../available_regions/available_regions_config.sh"
+AVAILABLE_REGIONS_CONFIG="$(dirname "$0")/../available_regions/available_regions.config.sh"
 
 # Check if variables are already defined, if not source or create config
 if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$WEB_APP_NAME" ] || [ -z "$APP_PLAN_NAME" ]; then
@@ -23,7 +23,7 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$WEB_APP_NAME" ] || [ -z "$A
         echo ""
 
         # Prompt for confirmation
-        read -p "Do you want to proceed with these settings? (y/yes): " CONFIRM
+        read -p "Do you want to proceed with these settings? (y|yes): " CONFIRM
         if [[ ! "$CONFIRM" =~ ^[Yy](es)?$ ]]; then
             printf "${RED}Setup cancelled.${NC}\n"
             exit 0
