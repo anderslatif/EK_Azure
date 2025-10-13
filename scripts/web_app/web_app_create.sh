@@ -64,11 +64,19 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$WEB_APP_NAME" ] || [ -z "$A
             printf "${BLUE}Fetching your available Azure regions...${NC} This will take several minutes but it will only be required the first time.\n"
             AVAILABLE_REGIONS_SCRIPT="$(dirname "$0")/../available_regions/available_regions.sh"
             AVAILABLE_REGIONS=()
-            TEMP_FILE=$(mktemp)
+
+            # Create temp file in a Windows-compatible way
+            TEMP_FILE="${TMPDIR:-/tmp}/regions_$$_$RANDOM.txt"
+
+            # Run the script with stderr shown (for progress) and stdout captured
             bash "$AVAILABLE_REGIONS_SCRIPT" > "$TEMP_FILE"
+
+            # Read regions from temp file (strip carriage returns for Windows compatibility)
             while IFS= read -r region; do
+                region="${region%$'\r'}"  # Remove trailing \r if present
                 [ -n "$region" ] && AVAILABLE_REGIONS+=("$region")
             done < "$TEMP_FILE"
+
             rm -f "$TEMP_FILE"
 
             # Save available regions to config file
