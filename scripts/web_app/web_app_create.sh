@@ -71,11 +71,21 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$WEB_APP_NAME" ] || [ -z "$A
             # Run the script with stderr shown (for progress) and stdout captured
             bash "$AVAILABLE_REGIONS_SCRIPT" > "$TEMP_FILE"
 
+            # Debug: Check if temp file has content
+            if [ ! -s "$TEMP_FILE" ]; then
+                printf "${RED}Warning: No regions were found. The temp file is empty.${NC}\n"
+                printf "Temp file location: $TEMP_FILE\n"
+                printf "Script location: $AVAILABLE_REGIONS_SCRIPT\n"
+            fi
+
             # Read regions from temp file (strip carriage returns for Windows compatibility)
-            while IFS= read -r region; do
+            while IFS= read -r region || [ -n "$region" ]; do
                 region="${region%$'\r'}"  # Remove trailing \r if present
                 [ -n "$region" ] && AVAILABLE_REGIONS+=("$region")
             done < "$TEMP_FILE"
+
+            # Debug: Show how many regions were found
+            printf "${BLUE}Found ${#AVAILABLE_REGIONS[@]} available regions${NC}\n"
 
             rm -f "$TEMP_FILE"
 
