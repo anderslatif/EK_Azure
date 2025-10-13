@@ -143,7 +143,7 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$MYSQL_SERVER_NAME" ] || [ -
             AVAILABLE_REGIONS_SCRIPT="$(dirname "$0")/../available_regions/available_regions.sh"
             AVAILABLE_REGIONS=()
             TEMP_FILE=$(mktemp)
-            bash "$AVAILABLE_REGIONS_SCRIPT" 2>&1 | grep -v "Testing" > "$TEMP_FILE"
+            bash "$AVAILABLE_REGIONS_SCRIPT" > "$TEMP_FILE"
             while IFS= read -r region; do
                 [ -n "$region" ] && AVAILABLE_REGIONS+=("$region")
             done < "$TEMP_FILE"
