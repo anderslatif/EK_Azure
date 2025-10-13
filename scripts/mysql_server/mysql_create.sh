@@ -107,7 +107,13 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$MYSQL_SERVER_NAME" ] || [ -
             if [[ "$MYSQL_ADMIN_PASSWORD" =~ [A-Z] ]]; then has_upper=1; fi
             if [[ "$MYSQL_ADMIN_PASSWORD" =~ [a-z] ]]; then has_lower=1; fi
             if [[ "$MYSQL_ADMIN_PASSWORD" =~ [0-9] ]]; then has_digit=1; fi
-            if [[ "$MYSQL_ADMIN_PASSWORD" =~ [!@#\$%\^*()_+=\[\]{}|;:\'\",./\<\>?~-] ]] || [[ "$MYSQL_ADMIN_PASSWORD" == *'&'* ]] || [[ "$MYSQL_ADMIN_PASSWORD" == *'`'* ]]; then has_special=1; fi
+            # Check for special characters using glob patterns (more portable)
+            if [[ "$MYSQL_ADMIN_PASSWORD" == *['!@#$%^&*()_+={}|:,./<>?~-']* ]] || \
+               [[ "$MYSQL_ADMIN_PASSWORD" == *'['* ]] || [[ "$MYSQL_ADMIN_PASSWORD" == *']'* ]] || \
+               [[ "$MYSQL_ADMIN_PASSWORD" == *';'* ]] || [[ "$MYSQL_ADMIN_PASSWORD" == *"'"* ]] || \
+               [[ "$MYSQL_ADMIN_PASSWORD" == *'"'* ]] || [[ "$MYSQL_ADMIN_PASSWORD" == *'`'* ]]; then
+                has_special=1
+            fi
 
             category_count=$((has_upper + has_lower + has_digit + has_special))
 
