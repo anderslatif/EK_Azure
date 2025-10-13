@@ -37,10 +37,12 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$VM_NAME" ] || [ -z "$ADMIN_
             printf "${BLUE}Fetching your available Azure regions...${NC} This will take several minutes but it will only be required the first time.\n"
             AVAILABLE_REGIONS_SCRIPT="$(dirname "$0")/../available_regions/available_regions.sh"
             AVAILABLE_REGIONS=()
-            TEMP_REGIONS=$(bash "$AVAILABLE_REGIONS_SCRIPT")
+            TEMP_FILE=$(mktemp)
+            bash "$AVAILABLE_REGIONS_SCRIPT" 2>&1 | grep -v "Testing" > "$TEMP_FILE"
             while IFS= read -r region; do
                 [ -n "$region" ] && AVAILABLE_REGIONS+=("$region")
-            done <<< "$TEMP_REGIONS"
+            done < "$TEMP_FILE"
+            rm -f "$TEMP_FILE"
 
             # Save available regions to config file
             {
@@ -55,8 +57,10 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$VM_NAME" ] || [ -z "$ADMIN_
 
         # Display numbered list of regions
         printf "${GREEN}Available regions:${NC}\n"
-        for i in "${!AVAILABLE_REGIONS[@]}"; do
-            echo "$((i+1)). ${AVAILABLE_REGIONS[$i]}"
+        count=1
+        for region in "${AVAILABLE_REGIONS[@]}"; do
+            echo "$count. $region"
+            ((count++))
         done
 
         # Prompt user to select a region
@@ -88,8 +92,12 @@ fi
 az group create --name $RG_NAME --location $LOCATION
  
 # 2. Create VM
-# Expand tilde in SSH key path for Windows compatibility
-EXPANDED_SSH_KEY_PATH="${SSH_KEY_PATH/#\~/$HOME}"
+# Expand tilde in SSH key path for cross-platform compatibility
+if [[ "$SSH_KEY_PATH" == "~"* ]]; then
+    EXPANDED_SSH_KEY_PATH="$HOME${SSH_KEY_PATH#\~}"
+else
+    EXPANDED_SSH_KEY_PATH="$SSH_KEY_PATH"
+fi
 az vm create \
   --resource-group $RG_NAME \
   --name $VM_NAME \

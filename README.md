@@ -22,19 +22,23 @@ How to keep track of spending and set up budgets and alerts.
 
 ## Scripts
 
-### Prerequisite
-
-If you are on **Windows** then run the following scripts on `Windows Subsystem for Linux`, `Git Bash` or the equivalent.
+### Prerequisites
 
 1. Install `AZ CLI`:
 
 https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest&pivots=winget
+
+Install with `winget` since the MSI installer is broken.
 
 2. Log in with your browser to get the subscription id. In your terminal run:
 
 ```bash
 $ az login
 ```
+
+Make sure to select the correct subscription id when prompted.
+
+3. If you are on **Windows** then make sure to run the scripts below on `Windows Subsystem for Linux`, `Git Bash` or the equivalent.
 
 ---
 
@@ -49,6 +53,16 @@ $ ./available_regions/available_regions_standalone.sh
 ---
 
 ### VMs
+
+#### Prerequisites
+
+On Windows generate an ssh key pair with:
+
+```bash
+$ ssh-keygen -t rsa -b 4096 -C "your_email@example.com" -f ~/.ssh/id_rsa
+```
+
+#### Usage
 
 Create a VM:
 

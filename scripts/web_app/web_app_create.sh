@@ -64,10 +64,12 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$WEB_APP_NAME" ] || [ -z "$A
             printf "${BLUE}Fetching your available Azure regions...${NC} This will take several minutes but it will only be required the first time.\n"
             AVAILABLE_REGIONS_SCRIPT="$(dirname "$0")/../available_regions/available_regions.sh"
             AVAILABLE_REGIONS=()
-            TEMP_REGIONS=$(bash "$AVAILABLE_REGIONS_SCRIPT")
+            TEMP_FILE=$(mktemp)
+            bash "$AVAILABLE_REGIONS_SCRIPT" 2>&1 | grep -v "Testing" > "$TEMP_FILE"
             while IFS= read -r region; do
                 [ -n "$region" ] && AVAILABLE_REGIONS+=("$region")
-            done <<< "$TEMP_REGIONS"
+            done < "$TEMP_FILE"
+            rm -f "$TEMP_FILE"
 
             # Save available regions to config file
             {

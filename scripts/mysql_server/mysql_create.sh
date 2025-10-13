@@ -107,7 +107,7 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$MYSQL_SERVER_NAME" ] || [ -
             if [[ "$MYSQL_ADMIN_PASSWORD" =~ [A-Z] ]]; then has_upper=1; fi
             if [[ "$MYSQL_ADMIN_PASSWORD" =~ [a-z] ]]; then has_lower=1; fi
             if [[ "$MYSQL_ADMIN_PASSWORD" =~ [0-9] ]]; then has_digit=1; fi
-            if [[ "$MYSQL_ADMIN_PASSWORD" =~ [\!\@\#\$\%\^\&\*\(\)_\+\-\=\[\]\{\}\|\;\:\'\"\,\.\<\>\/\?\`\~] ]]; then has_special=1; fi
+            if [[ "$MYSQL_ADMIN_PASSWORD" =~ [!@#\$%\^&*()_+=\[\]{}|;:\'\",./<>?`~-] ]]; then has_special=1; fi
 
             category_count=$((has_upper + has_lower + has_digit + has_special))
 
@@ -142,10 +142,12 @@ if [ -z "$RG_NAME" ] || [ -z "$LOCATION" ] || [ -z "$MYSQL_SERVER_NAME" ] || [ -
             printf "${BLUE}Fetching your available Azure regions...${NC} This will take several minutes but it will only be required the first time.\n"
             AVAILABLE_REGIONS_SCRIPT="$(dirname "$0")/../available_regions/available_regions.sh"
             AVAILABLE_REGIONS=()
-            TEMP_REGIONS=$(bash "$AVAILABLE_REGIONS_SCRIPT")
+            TEMP_FILE=$(mktemp)
+            bash "$AVAILABLE_REGIONS_SCRIPT" 2>&1 | grep -v "Testing" > "$TEMP_FILE"
             while IFS= read -r region; do
                 [ -n "$region" ] && AVAILABLE_REGIONS+=("$region")
-            done <<< "$TEMP_REGIONS"
+            done < "$TEMP_FILE"
+            rm -f "$TEMP_FILE"
 
             # Save available regions to config file
             {
