@@ -12,6 +12,9 @@ TOTAL_REGIONS=${#ALL_REGIONS[@]}
 CURRENT=0
 
 for region in "${ALL_REGIONS[@]}"; do
+    # Strip carriage returns for Windows compatibility
+    region="${region%$'\r'}"
+
     CURRENT=$((CURRENT + 1))
     # Print progress to stderr so it doesn't mix with region output
     printf "\rTesting regions: %d/%d" "$CURRENT" "$TOTAL_REGIONS" >&2
