@@ -214,7 +214,7 @@ az group create --name $RG_NAME --location $LOCATION
 
 # 2. Create MySQL Flexible Server
 printf "\n${GREEN}Creating MySQL Flexible Server...${NC}\n"
-printf "${BLUE}Note: This may take several minutes.${NC}\n"
+printf "${BLUE}Note: This will take several minutes.${NC}\n"
 if ! az mysql flexible-server create \
   --name $MYSQL_SERVER_NAME \
   --resource-group $RG_NAME \

@@ -33,7 +33,7 @@ echo "  - All databases within this server (including $MYSQL_DB_NAME)"
 echo ""
 
 # Prompt for confirmation to delete MySQL server
-read -p "Are you sure you want to delete the MySQL server? (y/yes): " CONFIRM
+read -p "Are you sure you want to delete the MySQL server? (y|yes): " CONFIRM
 if [[ ! "$CONFIRM" =~ ^[Yy](es)?$ ]]; then
     printf "${RED}Deletion cancelled.${NC}\n"
     exit 0
@@ -50,7 +50,7 @@ printf "${GREEN}MySQL Flexible Server deleted successfully.${NC}\n"
 
 # Prompt for resource group deletion
 echo ""
-read -p "Do you also want to delete the resource group '$RG_NAME'? (y/yes): " CONFIRM_RG
+read -p "Do you also want to delete the resource group '$RG_NAME'? (y|yes): " CONFIRM_RG
 if [[ "$CONFIRM_RG" =~ ^[Yy](es)?$ ]]; then
     printf "\n${GREEN}Deleting resource group...${NC}\n"
     az group delete --name $RG_NAME --yes --no-wait
