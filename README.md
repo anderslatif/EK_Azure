@@ -49,7 +49,7 @@ Make sure to select the correct subscription id when prompted.
 Find out which regions are available for your account:
 
 ```bash
-$ ./available_regions/available_regions_standalone.sh
+$ ./scripts/available_regions/available_regions_standalone.sh
 ```
 
 ---
@@ -69,7 +69,7 @@ $ ssh-keygen -t rsa -b 4096 -C "your_email@example.com" -f ~/.ssh/id_rsa
 Create a VM:
 
 ```bash
-$ ./vm_scripts/vm_create.sh
+$ ./scripts/vm_scripts/vm_create.sh
 ```
 
 Follow the prompts. It will take a few minutes to find what regions are available for your account but you will only need to do this once.
@@ -79,8 +79,44 @@ The VM configuration will be saved to `scripts/vm_scripts/vm.config.sh` while av
 To destroy the VM:
 
 ```bash
-$ ./vm_scripts/vm_destroy.sh
+$ ./scripts/vm_scripts/vm_destroy.sh
 ```
 
 It will look at `vm.config.sh` to find the resource group to destroy.
 
+---
+
+## Web App
+
+The Web App script assumes that Java version 21 on Linux is desired.
+
+Create a Web App:
+
+```bash
+$ ./scripts/web_app_scripts/web_app_create.sh
+```
+
+Destroy the Web App:
+
+```bash
+$ ./scripts/web_app_scripts/web_app_destroy.sh
+```
+
+
+---
+
+## MySQL
+
+The MySQL script assumes that a free tier (dev/test) database is desired and sets up the smallest amount of storage possible: 20 GB.
+
+Create a MySQL database:
+
+```bash
+$ ./scripts/mysql_scripts/mysql_create.sh
+```
+
+Destroy the MySQL database:
+
+```bash
+$ ./scripts/mysql_scripts/mysql_destroy.sh
+```
