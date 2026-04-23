@@ -24,6 +24,16 @@ Figure out which regions you are allowed to deploy to.
 
 ---
 
+## `az` Method
+
+If you have the `az` CLI installed then run:
+
+```bash
+$ az policy assignment list --query "[?name=='sys.regionrestriction'].parameters"
+```
+
+---
+
 ## Scripting Method
 
 ### Prerequisites
