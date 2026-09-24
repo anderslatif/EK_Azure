@@ -14,6 +14,10 @@ Since changing to the EK domain there is a limitation of 5 available regions per
 
 A visual guide on how to create a VM in Azure for Students. Create an issue or write to me if the UI has changed and the tutorial needs to be redone.
 
+[Creating a VM using `az`](./tutorials/create_a_VM/create_a_VM_AZ_AlmaLinux.md)
+
+A guide on how to create an AlmaLinux VM using the `az` CLI.
+
 [Azure Oddities](./tutorials/azure_oddities/azure_oddities.md)
 
 A list of problems encountered in Azure and how to solve them.
