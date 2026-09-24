@@ -34,6 +34,8 @@ Learn how to create an AlmaLinux Virtual Machine (VM) in Azure.
 
 <img src="./assets_vm_connect/03._select_ip_address.png" alt="select the ip address"/>
 
+You might need to do it twice. Please refresh to check if a public IP has been assigned.
+
 <img src="./assets_vm_connect/04._create_public_ip_address.png" alt="create a public ip address"/>
 
 <img src="./assets_vm_connect/05._SSH.png" alt="ssh into the vm"/>
