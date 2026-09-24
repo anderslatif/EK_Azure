@@ -20,3 +20,4 @@ az vm create \
   --output table
 ```
 
+In Powershell the `\` character will not work for line continuation (multiline), so you will need to run the command as a single line or replace it with **`**.
