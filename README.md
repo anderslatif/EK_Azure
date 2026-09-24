@@ -10,6 +10,10 @@ Scripts and guides for Azure for Students accounts
 
 Since changing to the EK domain there is a limitation of 5 available regions per account. It's diffferent for everyone. The guide above shows you how to find out which regions are available for your account.
 
+[Creating a VM](./tutorials/create_a_VM/create_a_VM.md)
+
+A visual guide on how to create a VM in Azure for Students. Create an issue or write to me if the UI has changed and the tutorial needs to be redone.
+
 [Azure Oddities](./tutorials/azure_oddities/azure_oddities.md)
 
 A list of problems encountered in Azure and how to solve them.
