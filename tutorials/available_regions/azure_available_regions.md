@@ -4,8 +4,6 @@ Figure out which regions you are allowed to deploy to.
 
 **Motivation**: It seems like that available regions is severely limited on the `ek` domain (Azure For Students) and differ between accounts with no rhyme or reason. It is not possible to change the available regions.
 
-**Deadline**: Before class
-
 ---
 
 ## The Azure Portal Method

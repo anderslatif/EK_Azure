@@ -10,7 +10,7 @@ This is not an assignment, but a document for odd behavior experienced in Azure.
 
 **Symptoms**: Can't authenticate Azure in GitHub Actions or can't work with others in the same Azure portal.
 
-**Cause**: KEA has checked off the ability to allow external interaction with Azure. This is done because of concerns for GDPR. It takes a checkbox in order to enable it, but it requires a thorough security assessment also.
+**Cause**: EK has checked off the ability to allow external interaction with Azure. This is done because of concerns for GDPR. It takes a checkbox in order to enable it, but it requires a thorough security assessment also.
 
 **Resolution**: There's nothing that can be done as the security department is blocking us.
 
@@ -22,7 +22,7 @@ This is not an assignment, but a document for odd behavior experienced in Azure.
 
 **Symptoms**: The VM is no longer accessible.
 
-**Cause**: Though no official source confirm that Azure has a policy of shutting down inactive VMs several students have reported this issue. It usually happens if the VM has been idle for X amount of weeks, for instance during the exam preparation period. It could very well be a KEA Azure policy.
+**Cause**: Though no official source confirm that Azure has a policy of shutting down inactive VMs several students have reported this issue. It usually happens if the VM has been idle for X amount of weeks, for instance during the exam preparation period. It could very well be a EK Azure policy.
 
 **Resolution**: Start the VM again.
 
