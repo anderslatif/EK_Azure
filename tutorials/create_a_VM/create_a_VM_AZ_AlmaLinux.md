@@ -1,12 +1,5 @@
 # Create an AlmaLinux VM using `az`
 
-
-0. Accept the AlmaLinux license agreement by running the following command (only needs to be done once):
-
-```bash
-az vm image terms accept --urn almalinux:almalinux-x86_64:9-gen2:latest
-```
-
 1. Create a resource group (Make sure to replace `<resource_group_name>` with your desired resource group name and `<available_region>` with your preferred Azure region):
 
 ```bash
