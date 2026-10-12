@@ -110,7 +110,9 @@ az vm create \
   --resource-group $RG_NAME \
   --name $VM_NAME \
   --image Ubuntu2204 \
-  --size Standard_B1s \
+  --size Standard_B2ats_v2 \
+  --storage-sku Premium_LRS \
+  --os-disk-size-gb 64 \
   --admin-username $ADMIN_USER \
   --public-ip-sku Standard \
   --authentication-type ssh \
